@@ -16,3 +16,655 @@ bin-release/
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
 # should NOT be excluded as they contain compiler settings and other important
 # information for Eclipse / Flash Builder.
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Desafio da Informática</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --card-hover: #273549;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #38bdf8;
+      --primary-dark: #0284c7;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --border: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #172554 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 60px;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: clamp(1.75rem, 4vw, 2.4rem);
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #082f49;
+    }
+
+    .btn-primary:hover {
+      background: #7dd3fc;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--card-hover);
+    }
+
+    .qr-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 24px;
+      display: none;
+    }
+
+    .qr-panel.active {
+      display: block;
+    }
+
+    .qr-grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+
+    @media (max-width: 600px) {
+      .qr-grid {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+      }
+    }
+
+    .qr-box {
+      background: #ffffff;
+      padding: 14px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-controls label {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .qr-controls input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #0f172a;
+      color: var(--text);
+      font-size: 0.92rem;
+      margin-bottom: 10px;
+    }
+
+    .qr-hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .progress-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .progress-bar-bg {
+      flex: 1;
+      height: 10px;
+      background: #0f172a;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), #22c55e);
+      transition: width 0.3s ease;
+    }
+
+    .question-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 16px;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .question-title {
+      font-size: 1.12rem;
+      line-height: 1.45;
+      margin-bottom: 16px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .option-item:hover {
+      border-color: var(--primary);
+      background: #132038;
+    }
+
+    .option-item input {
+      accent-color: var(--primary);
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .option-item.correct {
+      border-color: var(--success);
+      background: rgba(34, 197, 94, 0.14);
+    }
+
+    .option-item.wrong {
+      border-color: var(--danger);
+      background: rgba(239, 68, 68, 0.14);
+    }
+
+    .feedback {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      display: none;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback.ok {
+      color: #4ade80;
+    }
+
+    .feedback.err {
+      color: #f87171;
+    }
+
+    .submit-area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    .result-card {
+      background: var(--card);
+      border: 1px solid var(--primary);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 24px;
+      display: none;
+    }
+
+    .result-card.show {
+      display: block;
+    }
+
+    .score-big {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">Quiz Interativo</div>
+      <h1>Desafio da Informática</h1>
+      <p class="subtitle">Teste seus conhecimentos sobre hardware, redes, dispositivos e robótica.</p>
+    </header>
+
+    <div class="toolbar">
+      <button type="button" class="btn-primary" id="toggleQrBtn">Mostrar / Ocultar QR Code</button>
+      <button type="button" class="btn-secondary" id="resetBtn">Reiniciar Quiz</button>
+    </div>
+
+    <section class="qr-panel" id="qrPanel">
+      <div class="qr-grid">
+        <div class="qr-box" id="qrcode"></div>
+        <div class="qr-controls">
+          <label for="qrUrlInput">Link do quiz para o QR Code:</label>
+          <input type="url" id="qrUrlInput" placeholder="https://seusite.com/desafio-informatica.html" />
+          <button type="button" class="btn-primary" id="updateQrBtn">Atualizar QR Code</button>
+          <p class="qr-hint">
+            Dica: quando você publicar este arquivo na internet (ex.: GitHub Pages, Netlify ou Vercel), cole o link público aqui para que o QR Code leve direto os alunos ou jogadores ao quiz.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="progress-wrap">
+      <span id="progressText">0 de 10 respondidas</span>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressBar"></div>
+      </div>
+    </div>
+
+    <form id="quizForm"></form>
+
+    <div class="submit-area">
+      <button type="button" class="btn-primary" id="submitBtn">Finalizar e Ver Resultado</button>
+    </div>
+
+    <div class="result-card" id="resultCard">
+      <h2>Resultado Final</h2>
+      <div class="score-big" id="scoreDisplay">0 / 10</div>
+      <p id="scoreMessage"></p>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        id: 1,
+        type: "single",
+        question: "1. Qual componente é considerado o cérebro do computador?",
+        options: [
+          { label: "A", text: "Teclado" },
+          { label: "B", text: "Monitor" },
+          { label: "C", text: "Processador (CPU)" },
+          { label: "D", text: "Mouse" }
+        ],
+        correct: ["C"],
+        explanation: "A CPU (Unidade Central de Processamento) executa as instruções e coordena as operações do computador."
+      },
+      {
+        id: 2,
+        type: "single",
+        question: "2. Qual é a principal função da memória RAM?",
+        options: [
+          { label: "A", text: "Guardar temporariamente dados em uso" },
+          { label: "B", text: "Exibir imagens" },
+          { label: "C", text: "Conectar à internet" },
+          { label: "D", text: "Armazenar arquivos para sempre" }
+        ],
+        correct: ["A"],
+        explanation: "A memória RAM armazena temporariamente os dados e programas que estão sendo usados no momento."
+      },
+      {
+        id: 3,
+        type: "single",
+        question: "3. Qual destes componentes é utilizado para armazenar arquivos e programas?",
+        options: [
+          { label: "A", text: "Cooler" },
+          { label: "B", text: "HD ou SSD" },
+          { label: "C", text: "Mouse" },
+          { label: "D", text: "Monitor" }
+        ],
+        correct: ["B"],
+        explanation: "HDs e SSDs são unidades de armazenamento persistente onde ficam salvos o sistema, programas e arquivos."
+      },
+      {
+        id: 4,
+        type: "single",
+        question: "4. O teclado é um dispositivo de entrada de dados.",
+        options: [
+          { label: "Verdadeiro", text: "Verdadeiro" },
+          { label: "Falso", text: "Falso" }
+        ],
+        correct: ["Verdadeiro"],
+        explanation: "Verdadeiro: o teclado envia informações e comandos do usuário para o computador."
+      },
+      {
+        id: 5,
+        type: "single",
+        question: "5. Qual é a função da placa-mãe?",
+        options: [
+          { label: "A", text: "Imprimir documentos" },
+          { label: "B", text: "Armazenar energia elétrica" },
+          { label: "C", text: "Conectar os componentes do computador" },
+          { label: "D", text: "Mostrar imagens na tela" }
+        ],
+        correct: ["C"],
+        explanation: "A placa-mãe interliga processador, memória, armazenamento e demais periféricos permitindo a comunicação entre eles."
+      },
+      {
+        id: 6,
+        type: "single",
+        question: "6. O que significa Wi-Fi?",
+        options: [
+          { label: "A", text: "Um tipo de teclado" },
+          { label: "B", text: "Uma conexão de rede sem fio" },
+          { label: "C", text: "Um programa de edição" },
+          { label: "D", text: "Uma peça do processador" }
+        ],
+        correct: ["B"],
+        explanation: "Wi-Fi é uma tecnologia de rede sem fio que permite conectar dispositivos à rede local e à internet."
+      },
+      {
+        id: 7,
+        type: "single",
+        question: "7. Qual equipamento é utilizado para distribuir a conexão de internet em uma rede?",
+        options: [
+          { label: "A", text: "Caixa de som" },
+          { label: "B", text: "Roteador" },
+          { label: "C", text: "Impressora" },
+          { label: "D", text: "Scanner" }
+        ],
+        correct: ["B"],
+        explanation: "O roteador gerencia e distribui o sinal de rede (por cabo ou Wi-Fi) entre os dispositivos."
+      },
+      {
+        id: 8,
+        type: "multiple",
+        question: "8. Quais destes são dispositivos de entrada de dados? Escolha todos os corretos.",
+        options: [
+          { label: "A", text: "Teclado" },
+          { label: "B", text: "Microfone" },
+          { label: "C", text: "Monitor" },
+          { label: "D", text: "Mouse" }
+        ],
+        correct: ["A", "B", "D"],
+        explanation: "Teclado, microfone e mouse enviam dados para o computador; o monitor é um dispositivo de saída."
+      },
+      {
+        id: 9,
+        type: "single",
+        question: "9. A internet e o Wi-Fi são exatamente a mesma coisa.",
+        options: [
+          { label: "Verdadeiro", text: "Verdadeiro" },
+          { label: "Falso", text: "Falso" }
+        ],
+        correct: ["Falso"],
+        explanation: "Falso: Wi-Fi é o meio de conexão sem fio, enquanto a internet é a rede global de computadores interconectados."
+      },
+      {
+        id: 10,
+        type: "single",
+        question: "10. O que é um robô?",
+        options: [
+          { label: "A", text: "Um equipamento que só serve para jogar" },
+          { label: "B", text: "Um tipo de monitor" },
+          { label: "C", text: "Um cabo de computador" },
+          { label: "D", text: "Uma máquina programada para executar tarefas" }
+        ],
+        correct: ["D"],
+        explanation: "Um robô é uma máquina física ou sistema automatizado programado para realizar ações ou tarefas."
+      }
+    ];
+
+    const quizForm = document.getElementById("quizForm");
+    const progressText = document.getElementById("progressText");
+    const progressBar = document.getElementById("progressBar");
+    const submitBtn = document.getElementById("submitBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const resultCard = document.getElementById("resultCard");
+    const scoreDisplay = document.getElementById("scoreDisplay");
+    const scoreMessage = document.getElementById("scoreMessage");
+
+    const toggleQrBtn = document.getElementById("toggleQrBtn");
+    const qrPanel = document.getElementById("qrPanel");
+    const qrUrlInput = document.getElementById("qrUrlInput");
+    const updateQrBtn = document.getElementById("updateQrBtn");
+    const qrContainer = document.getElementById("qrcode");
+
+    let qrInstance = null;
+
+    function renderQuiz() {
+      quizForm.innerHTML = "";
+      questions.forEach((q) => {
+        const card = document.createElement("div");
+        card.className = "question-card";
+        card.dataset.qid = q.id;
+
+        const typeTag = q.type === "multiple" ? "Múltipla escolha" : "Escolha única";
+        const inputType = q.type === "multiple" ? "checkbox" : "radio";
+
+        const optionsHtml = q.options
+          .map((opt, idx) => {
+            const inputId = `q${q.id}_opt${idx}`;
+            const showPrefix = opt.label !== opt.text;
+            const displayText = showPrefix ? `${opt.label}. ${opt.text}` : opt.text;
+            return `
+              <label class="option-item" for="${inputId}" data-label="${opt.label}">
+                <input type="${inputType}" name="q${q.id}" id="${inputId}" value="${opt.label}" />
+                <span>${displayText}</span>
+              </label>
+            `;
+          })
+          .join("");
+
+        card.innerHTML = `
+          <div class="question-header">
+            <span>Questão ${q.id} de ${questions.length}</span>
+            <span>${typeTag}</span>
+          </div>
+          <div class="question-title">${q.question}</div>
+          <div class="options">${optionsHtml}</div>
+          <div class="feedback" id="feedback-${q.id}"></div>
+        `;
+
+        quizForm.appendChild(card);
+      });
+
+      quizForm.addEventListener("change", updateProgress);
+      updateProgress();
+    }
+
+    function getSelectedForQuestion(q) {
+      const checked = [...quizForm.querySelectorAll(`input[name="q${q.id}"]:checked`)];
+      return checked.map((el) => el.value);
+    }
+
+    function updateProgress() {
+      let answeredCount = 0;
+      questions.forEach((q) => {
+        if (getSelectedForQuestion(q).length > 0) {
+          answeredCount++;
+        }
+      });
+      progressText.textContent = `${answeredCount} de ${questions.length} respondidas`;
+      progressBar.style.width = `${(answeredCount / questions.length) * 100}%`;
+    }
+
+    function arraysEqualSet(a, b) {
+      if (a.length !== b.length) return false;
+      const setA = new Set(a);
+      return b.every((item) => setA.has(item));
+    }
+
+    function evaluateQuiz() {
+      let score = 0;
+
+      questions.forEach((q) => {
+        const selected = getSelectedForQuestion(q);
+        const isRight = arraysEqualSet(selected, q.correct);
+        if (isRight) score++;
+
+        const card = quizForm.querySelector(`.question-card[data-qid="${q.id}"]`);
+        const items = card.querySelectorAll(".option-item");
+        const feedback = document.getElementById(`feedback-${q.id}`);
+
+        items.forEach((item) => {
+          item.classList.remove("correct", "wrong");
+          const val = item.dataset.label;
+          const isChecked = selected.includes(val);
+          const isShouldBeChecked = q.correct.includes(val);
+
+          if (isShouldBeChecked) {
+            item.classList.add("correct");
+          } else if (isChecked && !isShouldBeChecked) {
+            item.classList.add("wrong");
+          }
+        });
+
+        feedback.className = `feedback show ${isRight ? "ok" : "err"}`;
+        feedback.textContent = `${isRight ? "Correto!" : "Atenção:"} ${q.explanation}`;
+      });
+
+      scoreDisplay.textContent = `${score} / ${questions.length}`;
+      if (score >= 8) {
+        scoreMessage.textContent = "Excelente desempenho! Você domina muito bem esses conceitos de informática.";
+      } else if (score >= 5) {
+        scoreMessage.textContent = "Bom trabalho! Revise as questões marcadas para mandar ainda melhor.";
+      } else {
+        scoreMessage.textContent = "Continue praticando! Cada tentativa ajuda a fixar os conceitos.";
+      }
+
+      resultCard.classList.add("show");
+      resultCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function resetQuiz() {
+      quizForm.reset();
+      resultCard.classList.remove("show");
+      quizForm.querySelectorAll(".option-item").forEach((el) => {
+        el.classList.remove("correct", "wrong");
+      });
+      quizForm.querySelectorAll(".feedback").forEach((fb) => {
+        fb.className = "feedback";
+        fb.textContent = "";
+      });
+      updateProgress();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function generateQRCode(url) {
+      qrContainer.innerHTML = "";
+      const targetUrl = (url || "").trim() || window.location.href;
+      qrUrlInput.value = targetUrl;
+      qrInstance = new QRCode(qrContainer, {
+        text: targetUrl,
+        width: 164,
+        height: 164,
+        colorDark: "#0f172a",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    }
+
+    toggleQrBtn.addEventListener("click", () => {
+      qrPanel.classList.toggle("active");
+      if (qrPanel.classList.contains("active") && !qrInstance) {
+        generateQRCode(window.location.href);
+      }
+    });
+
+    updateQrBtn.addEventListener("click", () => {
+      generateQRCode(qrUrlInput.value);
+    });
+
+    submitBtn.addEventListener("click", evaluateQuiz);
+    resetBtn.addEventListener("click", resetQuiz);
+
+    renderQuiz();
+  </script>
+</body>
+</html>
